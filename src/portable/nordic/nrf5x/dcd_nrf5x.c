@@ -1,4 +1,4 @@
-/* 
+/*
  * The MIT License (MIT)
  *
  * Copyright (c) 2019 Ha Thach (tinyusb.org)
@@ -90,6 +90,7 @@ static struct
 
   // nRF can only carry one DMA at a time, this is used to guard the access to EasyDMA
   atomic_bool dma_running;
+  uint32_t frame_count;
 }_dcd;
 
 /*------------------------------------------------------------------*/
@@ -658,7 +659,7 @@ void dcd_int_handler(uint8_t rhport)
       NRF_USBD->INTENCLR = USBD_INTENSET_SOF_Msk;
     }
 
-    dcd_event_bus_signal(0, DCD_EVENT_SOF, true);
+    dcd_event_sof(0, ++_dcd.frame_count, true);
   }
 
   if ( int_status & USBD_INTEN_USBEVENT_Msk )
